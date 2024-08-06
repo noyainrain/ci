@@ -1,0 +1,13 @@
+name: Release
+on: workflow_dispatch
+jobs:
+    release:
+        runs-on: ubuntu-latest # TODO needed right?
+        steps:
+            - uses: actions/checkout@v4
+              ref: main
+            - run: |
+              echo foo >> README.md
+              git status
+              git commit -am "auto commit"
+              git push
