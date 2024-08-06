@@ -10,9 +10,11 @@ jobs:
               with:
                   ref: main
             - run: |
-                  echo foo >> README.md
                   git config user.name ${{ github.event.sender.login }}
                   git config user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+            - run: |
+                  # echo foo >> README.md
+                  git merge --squash ${{ github.ref }}
                   git status
-                  git commit -am "auto commit"
+                  git commit -am "auto merge commit"
                   git push
