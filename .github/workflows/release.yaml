@@ -9,6 +9,8 @@ jobs:
                   ref: main
             - run: |
                   echo foo >> README.md
+                  git config user.name ${{ github.event.sender.login }}
+                  git config user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
                   git status
                   git commit -am "auto commit"
                   git push
