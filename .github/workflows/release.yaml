@@ -7,7 +7,7 @@ jobs:
             - uses: actions/checkout@v4
               ref: main
             - run: |
-              echo foo >> README.md
-              git status
-              git commit -am "auto commit"
-              git push
+                  echo foo >> README.md
+                  git status
+                  git commit -am "auto commit"
+                  git push
