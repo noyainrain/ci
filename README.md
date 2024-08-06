@@ -1,2 +1,4 @@
 Test
 foo
+
+NEW FEATURE :)

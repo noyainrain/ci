@@ -14,8 +14,10 @@ jobs:
                   git config user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
             - run: |
                   # echo foo >> README.md
-                  git fetch ${{ github.ref }}
-                  git merge --squash ${{ github.ref }}
+                  git remote -v
+                  git fetch origin ${{ github.ref_name }}
+                  git merge --squash origin/${{ github.ref_name }}
                   git status
+                  git diff --staged
                   git commit -am "auto merge commit"
                   git push
