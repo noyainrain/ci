@@ -5,7 +5,8 @@ jobs:
         runs-on: ubuntu-latest # TODO needed right?
         steps:
             - uses: actions/checkout@v4
-              ref: main
+              with:
+                  ref: main
             - run: |
                   echo foo >> README.md
                   git status
