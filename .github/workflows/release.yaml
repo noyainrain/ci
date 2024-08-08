@@ -18,7 +18,8 @@ jobs:
                   ${{ toJson(github) }}
                   EOF
             - run:
-                  # TODO test status check (might need github token)
+                  # TODO can this be a requirement (i.e. check has been run on this branch)
+                  # (might need github token)
                   # also alternative https://github.com/octokit/request-action
                   # (but yeah, sets output to string, has to use fromjson() github expr, seems a
                   # bit cumbersome?)
@@ -27,14 +28,11 @@ jobs:
                   git config user.name ${{ github.actor }}
                   git config user.email ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
             - run: |
-                  # echo foo >> README.md
                   git remote -v
                   git fetch origin ${{ github.ref_name }}
-                  # git merge --squash origin/${{ github.ref_name }}
-                  # TODO test ff-only
                   git merge --squash --ff-only origin/${{ github.ref_name }}
-                  git status
-                  git diff --staged
+                  # git status
+                  # git diff --staged
                   git commit -am "auto merge commit"
                   VERSION=0.0.1 # TODO read from file
                   git tag $VERSION
