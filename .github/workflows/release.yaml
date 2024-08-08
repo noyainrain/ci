@@ -1,3 +1,7 @@
+# Motivation:
+# * External PRs can't run all checks (because secret is not available)
+# * External PRs often need adjustment but feature branch can have "edits from
+# maintainers" disabled.
 name: Release
 on: workflow_dispatch
 permissions:
@@ -10,14 +14,28 @@ jobs:
               with:
                   ref: main
             - run: |
-                  git config user.name ${{ github.event.sender.login }}
-                  git config user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+                  cat << EOF
+                  ${{ toJson(github) }}
+                  EOF
+            - run:
+                  # TODO test status check (might need github token)
+                  # also alternative https://github.com/octokit/request-action
+                  # (but yeah, sets output to string, has to use fromjson() github expr, seems a
+                  # bit cumbersome?)
+                  curl https://api.github.com/repos/${{ github.repository }}/commits/heads/${{ github.ref_name }}/check-suites?app_id=15368 | jq --exit-status '.check_suites[0].conclusion=="success"'
+            - run: |
+                  git config user.name ${{ github.actor }}
+                  git config user.email ${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com
             - run: |
                   # echo foo >> README.md
                   git remote -v
                   git fetch origin ${{ github.ref_name }}
-                  git merge --squash origin/${{ github.ref_name }}
+                  # git merge --squash origin/${{ github.ref_name }}
+                  # TODO test ff-only
+                  git merge --squash --ff-only origin/${{ github.ref_name }}
                   git status
                   git diff --staged
                   git commit -am "auto merge commit"
-                  git push
+                  VERSION=0.0.1 # TODO read from file
+                  git tag $VERSION
+                  git push origin main $VERSION
